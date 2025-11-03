@@ -21,7 +21,7 @@ function Square({ value, onClick, disabled, highlight }) {
     border: "1px solid #999",
     borderRadius: 6,
     cursor: disabled ? "not-allowed" : "pointer",
-    boxShadow: highlight ? "0 0 10px 3px gold" : "none", // highlight winning boxes
+    boxShadow: highlight ? "0 0 10px 3px gold" : "none",
     ...baseStyle,
   };
 
@@ -39,8 +39,10 @@ function Square({ value, onClick, disabled, highlight }) {
 }
 
 function Board({ squares, onPlay, isFrozen }) {
+  const { winner: w } = calculateWinner(squares);
+
   function handleClick(i) {
-    if (isFrozen || squares[i] || calculateWinner(squares)) return;
+    if (isFrozen || squares[i] || w) return;
     const next = squares.slice();
     next[i] = nextTurn(next);
     onPlay(next);
@@ -134,8 +136,9 @@ function calculateWinner(sq) {
     [2, 4, 6],
   ];
   for (const [a, b, c] of lines) {
-    if (sq[a] && sq[a] === sq[b] && sq[a] === sq[c])
+    if (sq[a] && sq[a] === sq[b] && sq[a] === sq[c]) {
       return { winner: sq[a], line: [a, b, c] };
+    }
   }
   return { winner: null, line: null };
 }
